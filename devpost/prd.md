@@ -21,7 +21,7 @@ Kullanıcı elektrikli görünüm ve butonlar istedi; ilk incelemede daha belirg
 
 ## Features and Behavior
 ### Generate a Plan
-5–120 dakika ve 5–500 karakterlik görev kabul edilir. Gerçek modelden 3–6 somut adım istenir; her adımda başlık, kısa yönlendirme ve dakika bulunur. Toplam süre bütçeyi aşmaz. Hazırlanırken buton devre dışıdır ve durum görünür. Örnek görev butonları yalnızca formu doldurur; sahte sonuç göstermez.
+5–120 dakika ve 5–500 karakterlik görev kabul edilir. Gerçek modelden 3–5 somut adım istenir; her adımda başlık, kısa yönlendirme ve dakika bulunur. Toplam süre bütçeyi aşmaz. Hazırlanırken buton devre dışıdır ve durum görünür. Örnek görev butonları yalnızca formu doldurur; sahte sonuç göstermez. Daha önce kaydedilmiş altı adımlı planlar okunmaya devam eder.
 
 ### Focus and Completion
 Bir defada bir adımın sayacı çalışır. Başlat, duraklat ve sıfırla işlemleri vardır. Sürenin dolması adımı kendiliğinden tamamlamaz; kullanıcı tamamlandığını işaretler. Biten adımlar geri alınabilir. Tüm adımlar bittiğinde tamamlandı durumu görünür.
@@ -38,7 +38,7 @@ Planlar ve tamamlanan adımlar aynı tarayıcıda saklanır. Aktif sayaç sayfa 
 
 ## Product Decisions
 Kullanıcı: NextStep, gerçek yapay zekâ, yerel çalışma, elektrik teması.
-Önerilen uygulama ayrıntıları: tek ekran, 5–120 dakika, tarayıcıda saklama, 3–6 adım.
+Onaylanan uygulama ayrıntıları: tek ekran, 5–120 dakika, tarayıcıda saklama, yeni planlarda 3–5 adım. Eski kayıtlar korunur.
 
 ## What We're Building
 Görev → gerçek model → küçük adımlar → sayaç → tamamlanma → kalıcı ilerleme.

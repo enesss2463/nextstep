@@ -29,6 +29,21 @@ test('model output is validated instead of silently fabricated', () => {
   for (const value of [null, {}, { steps: [] }, { steps: [...sample.steps, ...sample.steps, ...sample.steps] }, { steps: sample.steps.map(step => ({ ...step, minutes: -1 })) }, { steps: sample.steps.map(step => ({ ...step, title: '' })) }, { steps: sample.steps.map(step => ({ ...step, detail: null })) }]) assert.throws(() => normalizePlan(value, 25));
 });
 
+test('new plans follow schema limits without invalidating older saved plans', () => {
+  const five = { steps: [...sample.steps, ...sample.steps.slice(0, 2)] };
+  assert.deepEqual(normalizePlan(five, 5).map(step => step.minutes), [1, 1, 1, 1, 1]);
+  for (const value of [
+    { steps: [...sample.steps, ...sample.steps] },
+    { steps: sample.steps.map(step => ({ ...step, title: 'ab' })) },
+    { steps: sample.steps.map(step => ({ ...step, title: 'x'.repeat(91) })) },
+    { steps: sample.steps.map(step => ({ ...step, detail: 'abcd' })) },
+    { steps: sample.steps.map(step => ({ ...step, detail: 'x'.repeat(241) })) }
+  ]) assert.throws(() => normalizePlan(value, 25));
+  const oldSteps = [...sample.steps, ...sample.steps].map(step => ({ ...step, title: 'x'.repeat(100), detail: 'x'.repeat(300), minutes: 5, done: false }));
+  const oldPlan = { id: 'old', task: 'Older plan', minutes: 30, model: 'llama3.2:latest', createdAt: '2026-10-26', steps: oldSteps };
+  assert.equal(validateState({ version: 1, plans: [oldPlan], selectedId: 'old', timer: null }).plans[0].steps.length, 6);
+});
+
 test('timer uses wall time, survives suspension and does not go negative', () => {
   assert.equal(remaining({ remainingMs: 60000, endsAt: 90000 }, 45000), 45000);
   assert.equal(remaining({ remainingMs: 60000, endsAt: 90000 }, 100000), 0);
@@ -79,4 +94,40 @@ test('HTTP boundary, model contract, error recovery and allowed files', async t 
   mode = 'bad'; assert.equal((await post({ task: 'CV hazırla', minutes: 25 })).status, 502);
   mode = 'down'; assert.equal((await post({ task: 'CV hazırla', minutes: 25 })).status, 502);
   mode = 'ok'; assert.equal((await post({ task: 'CV hazırla', minutes: 25 })).status, 200);
+});
+
+test('a concurrent generation is rejected and the next request can run', async t => {
+  let release;
+  let entered;
+  const started = new Promise(resolve => { entered = resolve; });
+  const pending = new Promise(resolve => { release = resolve; });
+  let first = true;
+  const server = createApp({ fetchImpl: async () => {
+    if (first) { first = false; entered(); await pending; }
+    return { ok: true, json: async () => ({ message: { content: JSON.stringify(sample) } }) };
+  } });
+  server.listen(0, '127.0.0.1'); await once(server, 'listening');
+  t.after(() => new Promise(resolve => { release(); server.closeAllConnections(); server.close(resolve); }));
+  const send = () => fetch(`http://127.0.0.1:${server.address().port}/api/plan`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ task: 'CV hazırla', minutes: 25 }) });
+  const original = send();
+  await started;
+  assert.equal((await send()).status, 429);
+  release();
+  assert.equal((await original).status, 200);
+  assert.equal((await send()).status, 200);
+});
+
+test('oversized and non-JSON requests do not reach the model', async t => {
+  let calls = 0;
+  const server = createApp({ fetchImpl: async () => { calls++; throw new Error('Model must not be called'); } });
+  server.listen(0, '127.0.0.1'); await once(server, 'listening');
+  t.after(() => new Promise(resolve => { server.closeAllConnections(); server.close(resolve); }));
+  const base = `http://127.0.0.1:${server.address().port}`;
+  for (const request of [
+    { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ task: 'x'.repeat(9000), minutes: 25 }) },
+    { headers: { 'Content-Type': 'text/plain' }, body: 'not JSON' },
+    { headers: { 'Content-Type': 'application/json' }, body: '{broken' }
+  ]) assert.equal((await fetch(base + '/api/plan', { method: 'POST', ...request })).status, 400);
+  assert.equal(calls, 0);
+  assert.equal((await fetch(base)).status, 200);
 });

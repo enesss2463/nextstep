@@ -20,11 +20,13 @@ export const planSchema = {
 };
 
 export function normalizePlan(value, budget) {
-  if (!Number.isInteger(budget) || budget < 5 || budget > 120 || !value || !Array.isArray(value.steps) || value.steps.length < 3 || value.steps.length > Math.min(6, budget)) {
+  const schema = planSchema.properties.steps;
+  if (!Number.isInteger(budget) || budget < 5 || budget > 120 || !value || !Array.isArray(value.steps) || value.steps.length < schema.minItems || value.steps.length > schema.maxItems) {
     throw new Error('Model kullanılabilir bir plan üretmedi. Lütfen yeniden dene.');
   }
+  const fields = schema.items.properties;
   const steps = value.steps.map(step => {
-    if (!step || typeof step.title !== 'string' || !step.title.trim() || step.title.length > 140 || typeof step.detail !== 'string' || !step.detail.trim() || step.detail.length > 600 || !Number.isInteger(step.minutes) || step.minutes < 1 || step.minutes > 120) {
+    if (!step || typeof step.title !== 'string' || step.title.trim().length < fields.title.minLength || step.title.length > fields.title.maxLength || typeof step.detail !== 'string' || step.detail.trim().length < fields.detail.minLength || step.detail.length > fields.detail.maxLength || !Number.isInteger(step.minutes) || step.minutes < fields.minutes.minimum || step.minutes > fields.minutes.maximum) {
       throw new Error('Modelin adımları doğrulanamadı. Lütfen yeniden dene.');
     }
     return { title: step.title.trim(), detail: step.detail.trim(), minutes: step.minutes, done: false };

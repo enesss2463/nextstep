@@ -24,7 +24,7 @@ Open **http://127.0.0.1:4173**. To stop NextStep, press Ctrl+C in its terminal. 
 ## What it does
 
 - Real local inference using `llama3.2:latest`, not canned plans.
-- Turkish task input and 3–6 actionable steps, constrained to a 5–120 minute budget.
+- Turkish task input and 3–5 actionable steps, constrained to a 5–120 minute budget.
 - Focus timer with pause/reset and wall-clock recovery after tab suspension or reload.
 - Manual step completion and saved plans in the same browser.
 - Electric blue/violet interface, keyboard controls and responsive layout.
@@ -39,7 +39,7 @@ The local model's quality and speed depend on hardware. Read and judge suggested
 npm test
 ```
 
-Tests use Node's built-in runner. They cover input validation, exact time allocation, invalid model output, timer behavior, persisted state and HTTP security/error boundaries. The HTTP integration test uses an explicitly mocked model, separate from live-model/browser verification.
+Tests use Node's built-in runner. They cover input validation, exact time allocation, invalid model output, timer behavior, saved-plan compatibility and HTTP boundaries, including concurrent and oversized requests. The HTTP integration tests use an explicitly mocked model, separate from live-model/browser verification. [Browser regression checks](tests/browser-regression.md) cover keyboard focus, persistence and layout.
 
 ## Project map
 

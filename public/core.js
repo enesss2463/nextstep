@@ -8,6 +8,7 @@ export function remaining(timer, now = Date.now()) {
 export function validateState(value) {
   if (!value || value.version !== 1 || !Array.isArray(value.plans) || value.plans.length > 200) throw new Error('Kayıt biçimi geçersiz.');
   const ids = new Set();
+  // Older saved plans allow six steps and longer text; keep those records readable.
   for (const plan of value.plans) {
     if (!plan || typeof plan.id !== 'string' || ids.has(plan.id) || typeof plan.task !== 'string' || plan.task.length > 500 || !Number.isInteger(plan.minutes) || plan.minutes < 5 || plan.minutes > 120 || typeof plan.createdAt !== 'string' || typeof plan.model !== 'string' || !Array.isArray(plan.steps) || plan.steps.length < 3 || plan.steps.length > 6) throw new Error('Plan kaydı geçersiz.');
     ids.add(plan.id);

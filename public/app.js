@@ -55,6 +55,7 @@ function renderHistory() {
   for (const plan of [...state.plans].reverse()) {
     const button = document.createElement('button');
     button.type = 'button'; button.className = 'history-item' + (plan.id === state.selectedId ? ' current' : '');
+    button.id = `plan-${plan.id}`;
     button.setAttribute('aria-pressed', String(plan.id === state.selectedId));
     const icon = document.createElement('span'); icon.textContent = plan.steps.every(step => step.done) ? '✓' : 'ϟ'; icon.setAttribute('aria-hidden', 'true');
     const info = document.createElement('div');
@@ -70,6 +71,7 @@ function renderHistory() {
 }
 
 function render() {
+  const focusedId = document.activeElement.id;
   const plan = selectedPlan();
   $('empty-plan').hidden = Boolean(plan);
   $('active-plan').hidden = !plan;
@@ -89,11 +91,13 @@ function render() {
     node.querySelector('p').textContent = step.detail;
     node.querySelector('.step-time').textContent = `◷ ${step.minutes} dakika`;
     const check = node.querySelector('.check');
+    check.id = `step-check-${index}`;
     check.textContent = step.done ? '✓' : String(index + 1).padStart(2, '0');
     check.setAttribute('aria-label', `${index + 1}. adımı ${step.done ? 'geri al' : 'tamamla'}: ${step.title}`);
     check.setAttribute('aria-pressed', String(step.done));
     check.addEventListener('click', () => { step.done = !step.done; ensureTimer(); save(); render(); });
     const focus = node.querySelector('.focus-step');
+    focus.id = `step-focus-${index}`;
     focus.hidden = step.done;
     focus.textContent = state.timer?.planId === plan.id && state.timer.stepIndex === index ? 'Seçili adım' : 'Odaklan ↗';
     focus.setAttribute('aria-label', `${index + 1}. adıma odaklan: ${step.title}`);
@@ -105,6 +109,7 @@ function render() {
   if (state.timer && done !== plan.steps.length) $('focus-title').textContent = plan.steps[state.timer.stepIndex].title;
   $('save-indicator').textContent = canSave ? 'Kaydedildi' : 'Kaydedilemedi';
   tick();
+  if (focusedId) $(focusedId)?.focus({ preventScroll: true });
 }
 
 function tick() {
@@ -160,10 +165,9 @@ async function checkStatus() {
     $('connection-status').hidden = status.ready;
     $('connection').textContent = status.ready ? '' : 'Bağlantı yok';
     $('connection').title = status.message;
-    $('connection-dot').className = 'dot ' + (status.ready ? 'ready' : 'offline');
     if (!status.ready) { $('form-error').textContent = status.message; $('form-error').hidden = false; }
   } catch {
-    $('connection-status').hidden = false; $('connection').textContent = 'Bağlantı yok'; $('connection-dot').className = 'dot offline';
+    $('connection-status').hidden = false; $('connection').textContent = 'Bağlantı yok';
   } finally { $('retry-status').disabled = false; }
 }
 $('retry-status').addEventListener('click', () => { $('form-error').hidden = true; checkStatus(); });
