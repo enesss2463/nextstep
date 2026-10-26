@@ -41,16 +41,6 @@ npm test
 
 Tests use Node's built-in runner. They cover input validation, exact time allocation, invalid model output, timer behavior, persisted state and HTTP security/error boundaries. The HTTP integration test uses an explicitly mocked model, separate from live-model/browser verification.
 
-## Demo recording outline (under 3 minutes)
-
-1. Explain the problem: knowing a goal but struggling to start.
-2. Enter a task and choose 25 minutes. Generate a real plan.
-3. Pick a step and start/pause its focus timer.
-4. Mark a step done and reload to show saved progress.
-5. Briefly show `devpost/scope.md`, `devpost/prd.md`, and `devpost/spec.md`.
-
-The interface is Turkish; include English narration/subtitles for the Devpost submission. A public source repository and public video link are still required. Local operation does not replace those requirements.
-
 ## Project map
 
 - `server.mjs`: local HTTP server and Ollama request.
