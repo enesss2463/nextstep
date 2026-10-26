@@ -1,0 +1,10 @@
+{
+  "name": "nextstep-local",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Local AI task planning and focus sessions powered by Ollama",
+  "scripts": { "start": "node server.mjs", "test": "node --test test.mjs" },
+  "engines": { "node": ">=22" },
+  "license": "MIT"
+}
