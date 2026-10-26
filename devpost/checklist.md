@@ -8,7 +8,7 @@ Build mode: fast. Kullanıcı planı ve hızlı akışı “hayır yok devam” 
 
 ## Slices
 
-- [ ] **1. Gerçek yapay zekâdan plan oluştur ve ilerle**
+- [x] **1. Gerçek yapay zekâdan plan oluştur ve ilerle**
   Becomes usable: Yerelde görev girilir, gerçek model adımları üretir, kullanıcı sayacı kullanır ve ilerleme kaydedilir.
   Why now: Küçük tek ekranlı ürünün çekirdeği ve model riski aynı uçtan uca akışta doğrulanır.
   PRD ref: `prd.md > The Core Journey`, `prd.md > Features and Behavior`
@@ -26,6 +26,8 @@ Build mode: fast. Kullanıcı planı ve hızlı akışı “hayır yok devam” 
 - [x] Kullanıcı geri bildirimi: teknik durum cümleleri, sloganlar ve gereksiz açıklamalar kaldırıldı.
 - [x] Kullanıcı geri bildirimi: elektrik görünümü, şimşek simgesi ve ışıklı kenar/buton efektleri geliştirildi.
 - [ ] Kullanıcı hazır olduğunu doğruladı; testler geçti.
+
+Implemented and mechanically verified. The participant reviewed the first version and requested copy reduction and a stronger electric theme; both were implemented. Final acceptance of the revised appearance is still open. The required demo video was explicitly deferred by the participant; the Devpost entry remains a draft.
 
 ## Code Tour and App Map
 - [x] Gerçek görevden modele ve kayda giden akış app-map içinde açıklandı; kullanıcıyla canlı öğrenme etkinliği henüz yapılmadı.

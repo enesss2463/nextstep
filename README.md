@@ -2,6 +2,8 @@
 
 A local AI planning and focus app: turn an overwhelming task into achievable steps, focus on one, and keep your progress.
 
+Source: [enesss2463/nextstep](https://github.com/enesss2463/nextstep). The app runs locally; no hosted app is deployed. The Devpost entry is a draft and its required demo video is deferred.
+
 ## Run locally
 
 Requires Node.js 22+ and [Ollama](https://ollama.com/). No npm dependencies or API keys.

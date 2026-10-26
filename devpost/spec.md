@@ -60,3 +60,8 @@ Ollama kapalı, çağrı yavaş veya JSON geçersiz → açıklayıcı hata, for
 
 ## Decisions and Open Issues
 Kullanıcı gerçek yapay zekâ ve yerel çalışmayı seçti. Ollama/llama3.2, Node.js ve tarayıcı kaydı içeren plan incelemesine “hayır yok devam” yanıtıyla onay verdi. Modelin cevap kalitesi ve ilk yükleme süresi erken canlı testle ölçülecek. Kullanıcıya ait özel bir öğrenme belirsizliği belirtilmedi.
+
+## Sharing Status
+Public source repository: https://github.com/enesss2463/nextstep
+MIT license: https://github.com/enesss2463/nextstep/blob/main/LICENSE
+The app remains local-only. The participant explicitly deferred the required demonstration video. No video link exists yet, and the Devpost entry has not been submitted. Live model generation succeeded; small-model wording remains an observed limitation.
